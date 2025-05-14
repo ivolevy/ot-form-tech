@@ -3,7 +3,7 @@ import MultiStepForm from "@/components/multi-step-form"
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
-      <header className="w-full bg-black p-4 text-white">
+      <header className="w-full bg-black text-white py-5">
         <div className="flex items-center gap-3 container mx-auto">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-red-600 text-white">
             <span className="text-xl font-bold">T</span>

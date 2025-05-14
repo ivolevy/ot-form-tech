@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { SecurityPlanTable } from "./security-plan-table"
-import { Clock, MapPin, Shield, ChevronDown, Info } from "lucide-react"
+import { Clock, MapPin, Shield, ChevronDown } from "lucide-react"
 import React, { useState } from "react"
 
 interface OperationalStepProps {
@@ -92,7 +92,7 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                   className="h-4 w-4 text-blue-700 transition-transform group-open:rotate-180"
                   aria-hidden="true"
                 />
-                <span className="group-open:hidden">Ver detalle</span>
+                <span className="group-open:hidden">ver detalle</span>
                 <span className="hidden group-open:inline">Ocultar</span>
               </div>
             </div>
@@ -152,7 +152,7 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                   className="h-4 w-4 text-green-700 transition-transform group-open:rotate-180"
                   aria-hidden="true"
                 />
-                <span className="group-open:hidden">Ver detalle</span>
+                <span className="group-open:hidden">ver detalle</span>
                 <span className="hidden group-open:inline">Ocultar</span>
               </div>
             </div>
@@ -212,7 +212,7 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                   className="h-4 w-4 text-amber-700 transition-transform group-open:rotate-180"
                   aria-hidden="true"
                 />
-                <span className="group-open:hidden">Ver detalle</span>
+                <span className="group-open:hidden">ver detalle</span>
                 <span className="hidden group-open:inline">Ocultar</span>
               </div>
             </div>
