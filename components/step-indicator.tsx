@@ -12,7 +12,7 @@ export function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
   ]
 
   return (
-    <div className="relative">
+    <div className="relative max-w-3xl mx-auto">
       <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-gray-200"></div>
       <div
         className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-red-600 transition-all duration-300"

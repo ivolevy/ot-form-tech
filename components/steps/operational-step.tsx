@@ -106,23 +106,23 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                     className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-blue-50"
                     onClick={() => setOpen((prev) => !prev)}
                   >
-                    <div className="font-medium">{section.title}</div>
-                    <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
-                        {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
-                      </div>
-                      <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
-                        <ChevronDown
+                  <div className="font-medium">{section.title}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
+                      {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+                      <ChevronDown
                           className={`h-3 w-3 text-gray-700 transition-transform ${open ? "rotate-180" : ""}`}
-                          aria-hidden="true"
-                        />
+                        aria-hidden="true"
+                      />
                         <span>{open ? "Ocultar" : "ver detalle"}</span>
                       </div>
                     </div>
                   </div>
                   {open && (
-                    <div className="p-4">
-                      <SecurityPlanTable locations={section.locations} />
+                <div className="p-4">
+                  <SecurityPlanTable locations={section.locations} />
                     </div>
                   )}
                 </div>
@@ -166,23 +166,23 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                     className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-green-50"
                     onClick={() => setOpen((prev) => !prev)}
                   >
-                    <div className="font-medium">{section.title}</div>
-                    <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
-                        {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
-                      </div>
-                      <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
-                        <ChevronDown
+                  <div className="font-medium">{section.title}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
+                      {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+                      <ChevronDown
                           className={`h-3 w-3 text-gray-700 transition-transform ${open ? "rotate-180" : ""}`}
-                          aria-hidden="true"
-                        />
+                        aria-hidden="true"
+                      />
                         <span>{open ? "Ocultar" : "ver detalle"}</span>
                       </div>
                     </div>
                   </div>
                   {open && (
-                    <div className="p-4">
-                      <SecurityPlanTable locations={section.locations} />
+                <div className="p-4">
+                  <SecurityPlanTable locations={section.locations} />
                     </div>
                   )}
                 </div>
@@ -226,23 +226,23 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                     className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-amber-50"
                     onClick={() => setOpen((prev) => !prev)}
                   >
-                    <div className="font-medium">{section.title}</div>
-                    <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
-                        {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
-                      </div>
-                      <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
-                        <ChevronDown
+                  <div className="font-medium">{section.title}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
+                      {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+                      <ChevronDown
                           className={`h-3 w-3 text-gray-700 transition-transform ${open ? "rotate-180" : ""}`}
-                          aria-hidden="true"
-                        />
+                        aria-hidden="true"
+                      />
                         <span>{open ? "Ocultar" : "ver detalle"}</span>
                       </div>
                     </div>
                   </div>
                   {open && (
-                    <div className="p-4">
-                      <SecurityPlanTable locations={section.locations} />
+                <div className="p-4">
+                  <SecurityPlanTable locations={section.locations} />
                     </div>
                   )}
                 </div>
