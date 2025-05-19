@@ -120,7 +120,7 @@ export default function MultiStepForm() {
   }
 
   return (
-    <div className="w-[95%] mx-auto rounded-lg border bg-white p-6 shadow-md">
+    <div className="w-[95%] mx-auto rounded-lg border bg-white p-6 shadow-md pb-4">
       <StepIndicator currentStep={currentStep} totalSteps={4} />
 
       <div className="mt-8">
