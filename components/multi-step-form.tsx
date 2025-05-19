@@ -124,7 +124,11 @@ export default function MultiStepForm() {
       <StepIndicator currentStep={currentStep} totalSteps={4} />
 
       <div className="mt-8">
-        {currentStep === 1 && <EventStep formData={formData} updateFormData={updateFormData} />}
+        {currentStep === 1 && (
+          <div className="mb-16">
+            <EventStep formData={formData} updateFormData={updateFormData} />
+          </div>
+        )}
         {currentStep === 2 && <AdvancedStep formData={formData} updateFormData={updateFormData} />}
         {currentStep === 3 && <OperationalStep formData={formData} updateFormData={updateFormData} />}
         {currentStep === 4 && <ConfirmationStep formData={formData} goToStep={goToStep} />}
