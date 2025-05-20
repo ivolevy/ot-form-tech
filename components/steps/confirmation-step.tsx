@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Pencil } from "lucide-react"
 import { Alert } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { SecurityPlanTable } from "./security-plan-table"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 interface ConfirmationStepProps {
   formData: FormData
@@ -210,20 +212,44 @@ export function ConfirmationStep({ formData, goToStep, acceptDisclaimer, setAcce
               </TabsList>
 
               <TabsContent value="exterior" className="mt-4">
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 mb-2">
                   Total agentes perímetro exterior: {formData.securityPlan.sections.exteriorPerimeter.totalAgents}
+                </div>
+                <div className="space-y-2 mt-2">
+                  {formData.securityPlan.sections.exteriorPerimeter.subsections.map((section, idx) => (
+                    <div key={idx} className="bg-gray-50 rounded px-3 py-2 flex items-center justify-between border border-gray-100">
+                      <span className="font-medium text-gray-800">{section.title}</span>
+                      <span className="text-red-700">{section.locations.reduce((sum, loc) => sum + Number(loc.agents), 0)} agentes</span>
+                    </div>
+                  ))}
                 </div>
               </TabsContent>
 
               <TabsContent value="tribunas" className="mt-4">
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 mb-2">
                   Total agentes tribunas: {formData.securityPlan.sections.stadiumStands.totalAgents}
+                </div>
+                <div className="space-y-2 mt-2">
+                  {formData.securityPlan.sections.stadiumStands.subsections.map((section, idx) => (
+                    <div key={idx} className="bg-gray-50 rounded px-3 py-2 flex items-center justify-between border border-gray-100">
+                      <span className="font-medium text-gray-800">{section.title}</span>
+                      <span className="text-red-700">{section.locations.reduce((sum, loc) => sum + Number(loc.agents), 0)} agentes</span>
+                    </div>
+                  ))}
                 </div>
               </TabsContent>
 
               <TabsContent value="interno" className="mt-4">
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 mb-2">
                   Total agentes perímetro interno: {formData.securityPlan.sections.internalPerimeter.totalAgents}
+                </div>
+                <div className="space-y-2 mt-2">
+                  {formData.securityPlan.sections.internalPerimeter.subsections.map((section, idx) => (
+                    <div key={idx} className="bg-gray-50 rounded px-3 py-2 flex items-center justify-between border border-gray-100">
+                      <span className="font-medium text-gray-800">{section.title}</span>
+                      <span className="text-red-700">{section.locations.reduce((sum, loc) => sum + Number(loc.agents), 0)} agentes</span>
+                    </div>
+                  ))}
                 </div>
               </TabsContent>
             </Tabs>

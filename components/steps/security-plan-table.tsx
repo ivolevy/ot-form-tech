@@ -98,12 +98,19 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                   )}
                 </TableCell>
                 <TableCell className="w-[25%] align-top">
-                  <textarea
-                    className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
-                    value={location.distribution.replace(/<br>/g, '\n')}
-                    onChange={e => handleDistTextChange(locIdx, e.target.value)}
-                    rows={location.distribution.split('<br>').length || 2}
-                  />
+                  {(() => {
+                    const distLines = location.distribution.replace(/<br>/g, '\n').split(/\n/)
+                    const funcLines = location.functions.replace(/<br>/g, '\n').split(/\n/)
+                    const maxRows = Math.max(distLines.length, funcLines.length, 2)
+                    return (
+                      <textarea
+                        className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
+                        value={location.distribution.replace(/<br>/g, '\n')}
+                        onChange={e => handleDistTextChange(locIdx, e.target.value)}
+                        rows={maxRows}
+                      />
+                    )
+                  })()}
                   {(() => {
                     // Sumar los números al inicio de cada línea
                     const lines = location.distribution.replace(/<br>/g, '\n').split(/\n/)
@@ -118,12 +125,19 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                   })()}
                 </TableCell>
                 <TableCell className="w-[50%] align-top">
-                  <textarea
-                    className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
-                    value={location.functions.replace(/<br>/g, '\n')}
-                    onChange={e => handleFunctionsTextChange(locIdx, e.target.value)}
-                    rows={location.functions.split('<br>').length || 2}
-                  />
+                  {(() => {
+                    const distLines = location.distribution.replace(/<br>/g, '\n').split(/\n/)
+                    const funcLines = location.functions.replace(/<br>/g, '\n').split(/\n/)
+                    const maxRows = Math.max(distLines.length, funcLines.length, 2)
+                    return (
+                      <textarea
+                        className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
+                        value={location.functions.replace(/<br>/g, '\n')}
+                        onChange={e => handleFunctionsTextChange(locIdx, e.target.value)}
+                        rows={maxRows}
+                      />
+                    )
+                  })()}
                 </TableCell>
               </TableRow>
             )
