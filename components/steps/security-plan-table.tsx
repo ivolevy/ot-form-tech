@@ -64,10 +64,10 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50">
-            <TableHead className="font-semibold">Lugar</TableHead>
-            <TableHead className="font-semibold text-center">Agentes</TableHead>
-            <TableHead className="font-semibold w-[35%]">Distribución</TableHead>
-            <TableHead className="font-semibold">Funciones</TableHead>
+            <TableHead className="font-semibold w-[10%]">Lugar</TableHead>
+            <TableHead className="font-semibold text-center w-[10%]">Agentes</TableHead>
+            <TableHead className="font-semibold w-[30%]">Distribución</TableHead>
+            <TableHead className="font-semibold w-[50%]">Funciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -76,8 +76,8 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
             const hasError = !!errorState[errorKey]
             return (
               <TableRow key={locIdx} className={locIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                <TableCell className="font-medium">{location.name}</TableCell>
-                <TableCell className="text-center">
+                <TableCell className="w-[10%] align-top font-medium">{location.name}</TableCell>
+                <TableCell className="w-[10%] text-center">
                   {onAgentsChange ? (
                     <div className="flex flex-col items-center">
                       <Input
@@ -97,7 +97,7 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                     <span className="rounded-full bg-gray-100 px-2 py-1 text-sm font-medium">{location.agents}</span>
                   )}
                 </TableCell>
-                <TableCell className="w-[35%] align-top">
+                <TableCell className="w-[30%] align-top">
                   <textarea
                     className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
                     value={location.distribution.replace(/<br>/g, '\n')}
@@ -117,7 +117,7 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                     return null
                   })()}
                 </TableCell>
-                <TableCell className="align-top">
+                <TableCell className="w-[50%] align-top">
                   <textarea
                     className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
                     value={location.functions.replace(/<br>/g, '\n')}
