@@ -12,15 +12,14 @@ interface EventStepProps {
 }
 
 export function EventStep({ formData, updateFormData }: EventStepProps) {
-  const eventTypes = ["Partido de Fútbol", "Concierto", "Conferencia", "Festival", "Exposición", "Otro"]
+  const eventTypes = [
+    "Partido Liga Argentina",
+    "Partido Conmebol Libertadores"
+  ]
 
   const venues = [
-    "Estadio Santiago Bernabéu",
-    "Estadio Metropolitano",
-    "WiZink Center",
-    "IFEMA",
-    "Palacio de Vistalegre",
-    "Otro",
+    "Estadio Monumental",
+    "Otro"
   ]
 
   return (

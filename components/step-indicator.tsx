@@ -44,11 +44,11 @@ export function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
             <div
               className={`relative flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors duration-200
                 ${
-                  step.number === currentStep
+                step.number === currentStep
+                  ? "border-red-600 bg-red-600 text-white"
+                  : step.number < currentStep
                     ? "border-red-600 bg-red-600 text-white"
-                    : step.number < currentStep
-                      ? "border-red-600 bg-red-600 text-white"
-                      : "border-gray-300 bg-white text-gray-500"
+                    : "border-gray-300 bg-white text-gray-500"
                 }
               `}
               style={{ zIndex: 2 }}

@@ -228,7 +228,7 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
             <div className="w-full text-left">
               <h3 className="text-lg font-medium">Perímetro Exterior</h3>
               <p className="text-sm text-gray-500">Distribución de agentes en el perímetro exterior</p>
-            </div>
+      </div>
               </div>
           <div className="flex items-center gap-3 ml-auto">
             <div className="rounded-full bg-red-50 px-4 py-1 text-sm font-medium text-red-700 min-w-[90px] flex justify-center whitespace-nowrap">

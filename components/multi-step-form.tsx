@@ -55,12 +55,12 @@ export default function MultiStepForm() {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     // Event data
-    eventType: "Partido de Fútbol",
+    eventType: "Partido Liga Argentina",
     eventName: "CLUB ATLÉTICO RIVER PLATE VS CLUB ATLÉTICO TALLERES",
     eventDate: "2025-05-20",
     startTime: "20:00",
     endTime: "22:00",
-    venue: "Estadio Monumental",
+    venue: "Estadio Santiago Bernabéu",
     address: "Av. Figueroa Alcorta 7597, Buenos Aires",
 
     // Advanced data

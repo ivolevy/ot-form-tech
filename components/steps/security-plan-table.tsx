@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { SecurityLocation } from "@/lib/default-data"
 import { Input } from "@/components/ui/input"
+import React, { useState } from "react"
 
 interface SecurityPlanTableProps {
   locations: SecurityLocation[]
@@ -12,6 +13,38 @@ interface SecurityPlanTableProps {
 }
 
 export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, errorMsg = "", sectionKey = '', sectionIdx = 0 }: SecurityPlanTableProps) {
+  const [localLocations, setLocalLocations] = useState(locations.map(loc => ({ ...loc, parsedDistribution: parseDistribution(loc.distribution) })))
+
+  function parseDistribution(distribution: string) {
+    // Convierte la string de distribución en un array de objetos { label, count }
+    return distribution.split(/<br>|\n/).map((line: string) => {
+      const match = line.match(/([•\-\*])?\s*(\d+)?\s*(.*)/)
+      if (!match) return { label: line, count: 0 }
+      const [, , count, label] = match
+      return { label: label.trim(), count: count ? parseInt(count) : 0 }
+    })
+  }
+
+  function handleDistChange(locIdx: number, dotIdx: number, value: number) {
+    const newLocations = [...localLocations]
+    const loc = newLocations[locIdx]
+    const parsed = loc.parsedDistribution.map((dot: {label: string, count: number}, i: number) => i === dotIdx ? { ...dot, count: value } : dot)
+    // Validar suma
+    const total = parsed.reduce((sum: number, d: {count: number}) => sum + (d.count || 0), 0)
+    if (total > loc.agents) return // No permitir superar el máximo
+    loc.parsedDistribution = parsed
+    loc.distribution = parsed.map((dot: {label: string, count: number}) => `• ${dot.count} ${dot.label}`).join('<br>')
+    setLocalLocations(newLocations)
+    if (onAgentsChange) onAgentsChange(locIdx, loc.agents)
+  }
+
+  function handleFunctionsChange(locIdx: number, value: string) {
+    const newLocations = [...localLocations]
+    newLocations[locIdx].functions = value
+    setLocalLocations(newLocations)
+    if (onAgentsChange) onAgentsChange(locIdx, newLocations[locIdx].agents)
+  }
+
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -24,11 +57,11 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {locations.map((location, index) => {
-            const errorKey = `${sectionKey}-${sectionIdx}-${index}`
+          {localLocations.map((location, locIdx) => {
+            const errorKey = `${sectionKey}-${sectionIdx}-${locIdx}`
             const hasError = !!errorState[errorKey]
             return (
-              <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+              <TableRow key={locIdx} className={locIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                 <TableCell className="font-medium">{location.name}</TableCell>
                 <TableCell className="text-center">
                   {onAgentsChange ? (
@@ -37,7 +70,7 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                         type="number"
                         min={0}
                         value={location.agents}
-                        onChange={e => onAgentsChange(index, Number(e.target.value))}
+                        onChange={e => onAgentsChange(locIdx, Number(e.target.value))}
                         className={`w-20 text-center border-gray-300 ${hasError ? 'border-red-500 ring-2 ring-red-200' : ''}`}
                       />
                       {hasError && (
@@ -50,8 +83,32 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                     <span className="rounded-full bg-gray-100 px-2 py-1 text-sm font-medium">{location.agents}</span>
                   )}
                 </TableCell>
-                <TableCell className="w-[35%]" dangerouslySetInnerHTML={{ __html: location.distribution }} />
-                <TableCell dangerouslySetInnerHTML={{ __html: location.functions }} />
+                <TableCell className="w-[35%]">
+                  {location.parsedDistribution.map((dot, dotIdx) => (
+                    <div key={dotIdx} className="flex items-center gap-2 mb-1">
+                      <Input
+                        type="number"
+                        min={0}
+                        max={location.agents}
+                        value={dot.count}
+                        onChange={e => handleDistChange(locIdx, dotIdx, Number(e.target.value))}
+                        className="w-16 text-center border-gray-300"
+                      />
+                      <span>{dot.label}</span>
+                    </div>
+                  ))}
+                  <div className="text-xs text-gray-500 mt-1">Máximo: {location.agents} personas</div>
+                  {(() => {
+                    const total = location.parsedDistribution.reduce((sum: number, d: {count: number}) => sum + (d.count || 0), 0)
+                    if (total !== location.agents) {
+                      return <div className="text-xs text-red-600 mt-1 font-semibold">La suma debe ser igual a {location.agents} personas (actual: {total})</div>
+                    }
+                    return null
+                  })()}
+                </TableCell>
+                <TableCell>
+                  <div dangerouslySetInnerHTML={{ __html: location.functions }} />
+                </TableCell>
               </TableRow>
             )
           })}
