@@ -52,6 +52,13 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
     if (onAgentsChange) onAgentsChange(locIdx, newLocations[locIdx].agents)
   }
 
+  function handleFunctionsTextChange(locIdx: number, value: string) {
+    const newLocations = [...localLocations]
+    newLocations[locIdx].functions = value.replace(/\n/g, '<br>')
+    setLocalLocations(newLocations)
+    if (onAgentsChange) onAgentsChange(locIdx, newLocations[locIdx].agents)
+  }
+
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -90,9 +97,9 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                     <span className="rounded-full bg-gray-100 px-2 py-1 text-sm font-medium">{location.agents}</span>
                   )}
                 </TableCell>
-                <TableCell className="w-[35%]">
+                <TableCell className="w-[35%] align-top">
                   <textarea
-                    className="w-full border border-gray-300 rounded p-1 text-sm"
+                    className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
                     value={location.distribution.replace(/<br>/g, '\n')}
                     onChange={e => handleDistTextChange(locIdx, e.target.value)}
                     rows={location.distribution.split('<br>').length || 2}
@@ -110,8 +117,13 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                     return null
                   })()}
                 </TableCell>
-                <TableCell>
-                  <div dangerouslySetInnerHTML={{ __html: location.functions }} />
+                <TableCell className="align-top">
+                  <textarea
+                    className="w-full border border-gray-300 rounded p-1 text-sm resize-vertical min-h-[80px]"
+                    value={location.functions.replace(/<br>/g, '\n')}
+                    onChange={e => handleFunctionsTextChange(locIdx, e.target.value)}
+                    rows={location.functions.split('<br>').length || 2}
+                  />
                 </TableCell>
               </TableRow>
             )
