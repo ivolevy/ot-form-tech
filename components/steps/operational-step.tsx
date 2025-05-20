@@ -20,6 +20,78 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
   const internoAgents = formData.securityPlan.sections.internalPerimeter.totalAgents
   const totalAgents = formData.securityPlan.sections.totalAgents
 
+  // El límite debe ser el valor original del plan, no el actual (que puede variar si el usuario edita)
+  const [initialMaxAgents] = useState(() => {
+    // Buscar el total original sumando todos los agentes de todas las ubicaciones
+    const plan = formData.securityPlan.sections
+    const sumAll = (subsections: any[]) =>
+      subsections.reduce((sum, sub) => sum + sub.locations.reduce((s, loc) => s + Number(loc.agents), 0), 0)
+    return (
+      sumAll(plan.stadiumStands.subsections) +
+      sumAll(plan.exteriorPerimeter.subsections) +
+      sumAll(plan.internalPerimeter.subsections)
+    )
+  })
+
+  const [errorState, setErrorState] = useState<{ [key: string]: boolean }>({})
+  const [errorMsg, setErrorMsg] = useState<string>("")
+
+  // Calcula el total actual de agentes, reemplazando el valor editado por el nuevo valor propuesto
+  function getNewTotal(section: string, sectionIdx: number, locationIdx: number, newValue: number) {
+    const plan = formData.securityPlan.sections
+    // Helper para sumar todos los agentes de todas las ubicaciones
+    const sumAllWithChange = () => {
+      let total = 0
+      // Tribunas
+      plan.stadiumStands.subsections.forEach((sub: any, i: number) => {
+        sub.locations.forEach((loc: any, j: number) => {
+          if (section === 'stadiumStands' && i === sectionIdx && j === locationIdx) {
+            total += newValue
+          } else {
+            total += Number(loc.agents)
+          }
+        })
+      })
+      // Exterior
+      plan.exteriorPerimeter.subsections.forEach((sub: any, i: number) => {
+        sub.locations.forEach((loc: any, j: number) => {
+          if (section === 'exteriorPerimeter' && i === sectionIdx && j === locationIdx) {
+            total += newValue
+          } else {
+            total += Number(loc.agents)
+          }
+        })
+      })
+      // Interno
+      plan.internalPerimeter.subsections.forEach((sub: any, i: number) => {
+        sub.locations.forEach((loc: any, j: number) => {
+          if (section === 'internalPerimeter' && i === sectionIdx && j === locationIdx) {
+            total += newValue
+          } else {
+            total += Number(loc.agents)
+          }
+        })
+      })
+      return total
+    }
+    // También recalcula el subtotal de la sección editada
+    const sumSection = (subsections: any[], sIdx: number, lIdx: number, val: number) =>
+      subsections.reduce((sum: number, sub: any, i: number) =>
+        sum + sub.locations.reduce((s: number, loc: any, j: number) =>
+          s + (i === sIdx && j === lIdx ? val : Number(loc.agents)), 0), 0)
+    const trib = section === 'stadiumStands'
+      ? sumSection(plan.stadiumStands.subsections, sectionIdx, locationIdx, newValue)
+      : plan.stadiumStands.totalAgents
+    const ext = section === 'exteriorPerimeter'
+      ? sumSection(plan.exteriorPerimeter.subsections, sectionIdx, locationIdx, newValue)
+      : plan.exteriorPerimeter.totalAgents
+    const int = section === 'internalPerimeter'
+      ? sumSection(plan.internalPerimeter.subsections, sectionIdx, locationIdx, newValue)
+      : plan.internalPerimeter.totalAgents
+    const total = sumAllWithChange()
+    return { trib, ext, int, total }
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -92,10 +164,27 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
             </div>
           </summary>
           <div className="p-6">
-          {formData.securityPlan.sections.stadiumStands.subsections.map((section, index) => {
+          {formData.securityPlan.sections.stadiumStands.subsections.map((section, sectionIdx) => {
               const [open, setOpen] = useState(false)
+              const handleAgentsChange = (locationIdx: number, value: number) => {
+                const { total, trib } = getNewTotal('stadiumStands', sectionIdx, locationIdx, value)
+                const errorKey = `trib-${sectionIdx}-${locationIdx}`
+                if (total > initialMaxAgents) {
+                  setErrorState({ [errorKey]: true })
+                  setErrorMsg(`No puedes superar el total máximo de agentes (${initialMaxAgents})`)
+                  return
+                } else {
+                  setErrorState({})
+                  setErrorMsg("")
+                }
+                const updatedPlan = JSON.parse(JSON.stringify(formData.securityPlan))
+                updatedPlan.sections.stadiumStands.subsections[sectionIdx].locations[locationIdx].agents = value
+                updatedPlan.sections.stadiumStands.totalAgents = trib
+                updatedPlan.sections.totalAgents = trib + updatedPlan.sections.exteriorPerimeter.totalAgents + updatedPlan.sections.internalPerimeter.totalAgents
+                updateFormData({ securityPlan: updatedPlan })
+              }
               return (
-                <div key={index} className="group mb-4 rounded-lg border border-gray-200">
+                <div key={sectionIdx} className="group mb-4 rounded-lg border border-gray-200">
                   <div
                   className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-red-50"
                     onClick={() => setOpen((prev) => !prev)}
@@ -115,7 +204,14 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                   </div>
                   {open && (
                 <div className="p-4">
-                  <SecurityPlanTable locations={section.locations} />
+                  <SecurityPlanTable
+                    locations={section.locations}
+                    onAgentsChange={(locationIdx, value) => handleAgentsChange(locationIdx, value)}
+                    errorState={errorState}
+                    errorMsg={errorMsg}
+                    sectionKey="trib"
+                    sectionIdx={sectionIdx}
+                  />
                     </div>
                   )}
                 </div>
@@ -144,10 +240,27 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
             </div>
           </summary>
           <div className="p-6">
-          {formData.securityPlan.sections.exteriorPerimeter.subsections.map((section, index) => {
+          {formData.securityPlan.sections.exteriorPerimeter.subsections.map((section, sectionIdx) => {
               const [open, setOpen] = useState(false)
+              const handleAgentsChange = (locationIdx: number, value: number) => {
+                const { total, ext } = getNewTotal('exteriorPerimeter', sectionIdx, locationIdx, value)
+                const errorKey = `ext-${sectionIdx}-${locationIdx}`
+                if (total > initialMaxAgents) {
+                  setErrorState({ [errorKey]: true })
+                  setErrorMsg(`No puedes superar el total máximo de agentes (${initialMaxAgents})`)
+                  return
+                } else {
+                  setErrorState({})
+                  setErrorMsg("")
+                }
+                const updatedPlan = JSON.parse(JSON.stringify(formData.securityPlan))
+                updatedPlan.sections.exteriorPerimeter.subsections[sectionIdx].locations[locationIdx].agents = value
+                updatedPlan.sections.exteriorPerimeter.totalAgents = ext
+                updatedPlan.sections.totalAgents = updatedPlan.sections.stadiumStands.totalAgents + ext + updatedPlan.sections.internalPerimeter.totalAgents
+                updateFormData({ securityPlan: updatedPlan })
+              }
               return (
-                <div key={index} className="group mb-4 rounded-lg border border-gray-200">
+                <div key={sectionIdx} className="group mb-4 rounded-lg border border-gray-200">
                   <div
                   className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-red-50"
                     onClick={() => setOpen((prev) => !prev)}
@@ -167,7 +280,14 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                   </div>
                   {open && (
                 <div className="p-4">
-                  <SecurityPlanTable locations={section.locations} />
+                  <SecurityPlanTable
+                    locations={section.locations}
+                    onAgentsChange={(locationIdx, value) => handleAgentsChange(locationIdx, value)}
+                    errorState={errorState}
+                    errorMsg={errorMsg}
+                    sectionKey="ext"
+                    sectionIdx={sectionIdx}
+                  />
                     </div>
                   )}
                 </div>
@@ -196,10 +316,27 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
             </div>
           </summary>
           <div className="p-6">
-            {formData.securityPlan.sections.internalPerimeter.subsections.map((section, index) => {
+            {formData.securityPlan.sections.internalPerimeter.subsections.map((section, sectionIdx) => {
               const [open, setOpen] = useState(false)
+              const handleAgentsChange = (locationIdx: number, value: number) => {
+                const { total, int } = getNewTotal('internalPerimeter', sectionIdx, locationIdx, value)
+                const errorKey = `int-${sectionIdx}-${locationIdx}`
+                if (total > initialMaxAgents) {
+                  setErrorState({ [errorKey]: true })
+                  setErrorMsg(`No puedes superar el total máximo de agentes (${initialMaxAgents})`)
+                  return
+                } else {
+                  setErrorState({})
+                  setErrorMsg("")
+                }
+                const updatedPlan = JSON.parse(JSON.stringify(formData.securityPlan))
+                updatedPlan.sections.internalPerimeter.subsections[sectionIdx].locations[locationIdx].agents = value
+                updatedPlan.sections.internalPerimeter.totalAgents = int
+                updatedPlan.sections.totalAgents = updatedPlan.sections.stadiumStands.totalAgents + updatedPlan.sections.exteriorPerimeter.totalAgents + int
+                updateFormData({ securityPlan: updatedPlan })
+              }
               return (
-                <div key={index} className="group mb-4 rounded-lg border border-gray-200">
+                <div key={sectionIdx} className="group mb-4 rounded-lg border border-gray-200">
                   <div
                   className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-red-50"
                     onClick={() => setOpen((prev) => !prev)}
@@ -219,7 +356,14 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                   </div>
                   {open && (
                 <div className="p-4">
-                  <SecurityPlanTable locations={section.locations} />
+                  <SecurityPlanTable
+                    locations={section.locations}
+                    onAgentsChange={(locationIdx, value) => handleAgentsChange(locationIdx, value)}
+                    errorState={errorState}
+                    errorMsg={errorMsg}
+                    sectionKey="int"
+                    sectionIdx={sectionIdx}
+                  />
                     </div>
                   )}
                 </div>
