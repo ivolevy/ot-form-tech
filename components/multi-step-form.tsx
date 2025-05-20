@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRef } from "react"
 import { EventStep } from "./steps/event-step"
 import { AdvancedStep } from "./steps/advanced-step"
 import { OperationalStep } from "./steps/operational-step"
@@ -91,6 +92,10 @@ export default function MultiStepForm() {
     securityPlan: defaultSecurityPlan,
   })
 
+  const [acceptCheckedStep2, setAcceptCheckedStep2] = useState(false)
+  const [acceptCheckedStep3, setAcceptCheckedStep3] = useState(false)
+  const [acceptDisclaimer, setAcceptDisclaimer] = useState(false)
+
   const updateFormData = (data: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...data }))
   }
@@ -131,7 +136,14 @@ export default function MultiStepForm() {
         )}
         {currentStep === 2 && <AdvancedStep formData={formData} updateFormData={updateFormData} />}
         {currentStep === 3 && <OperationalStep formData={formData} updateFormData={updateFormData} />}
-        {currentStep === 4 && <ConfirmationStep formData={formData} goToStep={goToStep} />}
+        {currentStep === 4 && (
+          <ConfirmationStep
+            formData={formData}
+            goToStep={goToStep}
+            acceptDisclaimer={acceptDisclaimer}
+            setAcceptDisclaimer={setAcceptDisclaimer}
+          />
+        )}
       </div>
 
       <div className="mt-8 flex justify-between">
@@ -144,12 +156,60 @@ export default function MultiStepForm() {
           <ChevronLeft size={16} /> Anterior
         </Button>
 
-        {currentStep < 4 ? (
+        {currentStep === 2 ? (
+          <div className="flex items-center">
+            <div className="flex items-center gap-2 mr-6">
+              <input
+                type="checkbox"
+                id="accept-continue-step2"
+                checked={acceptCheckedStep2}
+                onChange={e => setAcceptCheckedStep2(e.target.checked)}
+                className="accent-red-600 w-4 h-4"
+              />
+              <label htmlFor="accept-continue-step2" className="text-sm select-none cursor-pointer">
+                Aceptar y continuar
+              </label>
+            </div>
+            <Button
+              onClick={nextStep}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700"
+              disabled={!acceptCheckedStep2}
+            >
+              Siguiente <ChevronRight size={16} />
+            </Button>
+          </div>
+        ) : currentStep === 3 ? (
+          <div className="flex items-center">
+            <div className="flex items-center gap-2 mr-6">
+              <input
+                type="checkbox"
+                id="accept-continue-step3"
+                checked={acceptCheckedStep3}
+                onChange={e => setAcceptCheckedStep3(e.target.checked)}
+                className="accent-red-600 w-4 h-4"
+              />
+              <label htmlFor="accept-continue-step3" className="text-sm select-none cursor-pointer">
+                Aceptar y continuar
+              </label>
+            </div>
+            <Button
+              onClick={nextStep}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700"
+              disabled={!acceptCheckedStep3}
+            >
+              Siguiente <ChevronRight size={16} />
+            </Button>
+          </div>
+        ) : currentStep === 1 ? (
           <Button onClick={nextStep} className="flex items-center gap-2 bg-red-600 hover:bg-red-700">
             Siguiente <ChevronRight size={16} />
           </Button>
         ) : (
-          <Button onClick={handleSubmit} className="bg-red-600 hover:bg-red-700">
+          <Button
+            onClick={handleSubmit}
+            className="bg-red-600 hover:bg-red-700"
+            disabled={!acceptDisclaimer}
+          >
             Enviar Formulario
           </Button>
         )}

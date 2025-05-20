@@ -81,25 +81,25 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
               <h3 className="text-lg font-medium">Tribunas del Estadio</h3>
               <p className="text-sm text-gray-500">Distribución de agentes en las tribunas</p>
             </div>
-          </div>
+              </div>
           <div className="flex items-center gap-3 ml-auto">
             <div className="rounded-full bg-red-50 px-4 py-1 text-sm font-medium text-red-700 min-w-[90px] flex justify-center whitespace-nowrap">
               {tribunasAgents} agentes
             </div>
             <div className="flex items-center gap-1 rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-red-700 min-w-[80px] justify-center whitespace-nowrap">
               <span>ver detalle</span>
+              </div>
             </div>
-          </div>
-        </summary>
-        <div className="p-6">
+          </summary>
+          <div className="p-6">
           {formData.securityPlan.sections.stadiumStands.subsections.map((section, index) => {
-            const [open, setOpen] = useState(false)
-            return (
-              <div key={index} className="group mb-4 rounded-lg border border-gray-200">
-                <div
+              const [open, setOpen] = useState(false)
+              return (
+                <div key={index} className="group mb-4 rounded-lg border border-gray-200">
+                  <div
                   className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-red-50"
-                  onClick={() => setOpen((prev) => !prev)}
-                >
+                    onClick={() => setOpen((prev) => !prev)}
+                  >
                   <div className="font-medium flex items-center gap-2">
                     <span>{section.title}</span>
                     <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -109,20 +109,20 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                       {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
                     </div>
                     <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-red-700">
-                      <span>{open ? "Ocultar" : "ver detalle"}</span>
+                        <span>{open ? "Ocultar" : "ver detalle"}</span>
+                      </div>
                     </div>
                   </div>
+                  {open && (
+                <div className="p-4">
+                  <SecurityPlanTable locations={section.locations} />
+                    </div>
+                  )}
                 </div>
-                {open && (
-                  <div className="p-4">
-                    <SecurityPlanTable locations={section.locations} />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </details>
+              )
+            })}
+          </div>
+        </details>
 
       {/* Accordion for Perímetro Exterior */}
       <details className="group rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -133,25 +133,25 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
               <h3 className="text-lg font-medium">Perímetro Exterior</h3>
               <p className="text-sm text-gray-500">Distribución de agentes en el perímetro exterior</p>
             </div>
-          </div>
+              </div>
           <div className="flex items-center gap-3 ml-auto">
             <div className="rounded-full bg-red-50 px-4 py-1 text-sm font-medium text-red-700 min-w-[90px] flex justify-center whitespace-nowrap">
               {exteriorAgents} agentes
             </div>
             <div className="flex items-center gap-1 rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-red-700 min-w-[80px] justify-center whitespace-nowrap">
               <span>ver detalle</span>
+              </div>
             </div>
-          </div>
-        </summary>
-        <div className="p-6">
+          </summary>
+          <div className="p-6">
           {formData.securityPlan.sections.exteriorPerimeter.subsections.map((section, index) => {
-            const [open, setOpen] = useState(false)
-            return (
-              <div key={index} className="group mb-4 rounded-lg border border-gray-200">
-                <div
+              const [open, setOpen] = useState(false)
+              return (
+                <div key={index} className="group mb-4 rounded-lg border border-gray-200">
+                  <div
                   className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-red-50"
-                  onClick={() => setOpen((prev) => !prev)}
-                >
+                    onClick={() => setOpen((prev) => !prev)}
+                  >
                   <div className="font-medium flex items-center gap-2">
                     <span>{section.title}</span>
                     <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -161,20 +161,20 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                       {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
                     </div>
                     <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-red-700">
-                      <span>{open ? "Ocultar" : "ver detalle"}</span>
+                        <span>{open ? "Ocultar" : "ver detalle"}</span>
+                      </div>
                     </div>
                   </div>
+                  {open && (
+                <div className="p-4">
+                  <SecurityPlanTable locations={section.locations} />
+                    </div>
+                  )}
                 </div>
-                {open && (
-                  <div className="p-4">
-                    <SecurityPlanTable locations={section.locations} />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </details>
+              )
+            })}
+          </div>
+        </details>
 
       {/* Accordion for Perímetro Interno */}
       <details className="group rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -182,28 +182,28 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
           <div className="flex items-center justify-start w-full">
             <div className="h-8 w-1 rounded-full bg-red-500 mr-2"></div>
             <div className="w-full text-left">
-              <h3 className="text-lg font-medium">Perímetro Interno</h3>
-              <p className="text-sm text-gray-500">Distribución de agentes en el perímetro interno</p>
+                <h3 className="text-lg font-medium">Perímetro Interno</h3>
+                <p className="text-sm text-gray-500">Distribución de agentes en el perímetro interno</p>
+              </div>
             </div>
-          </div>
           <div className="flex items-center gap-3 ml-auto">
             <div className="rounded-full bg-red-50 px-4 py-1 text-sm font-medium text-red-700 min-w-[90px] flex justify-center whitespace-nowrap">
-              {internoAgents} agentes
-            </div>
+                {internoAgents} agentes
+              </div>
             <div className="flex items-center gap-1 rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-red-700 min-w-[80px] justify-center whitespace-nowrap">
               <span>ver detalle</span>
+              </div>
             </div>
-          </div>
-        </summary>
-        <div className="p-6">
-          {formData.securityPlan.sections.internalPerimeter.subsections.map((section, index) => {
-            const [open, setOpen] = useState(false)
-            return (
-              <div key={index} className="group mb-4 rounded-lg border border-gray-200">
-                <div
+          </summary>
+          <div className="p-6">
+            {formData.securityPlan.sections.internalPerimeter.subsections.map((section, index) => {
+              const [open, setOpen] = useState(false)
+              return (
+                <div key={index} className="group mb-4 rounded-lg border border-gray-200">
+                  <div
                   className="flex cursor-pointer items-center justify-between bg-gray-50 px-4 py-3 hover:bg-red-50"
-                  onClick={() => setOpen((prev) => !prev)}
-                >
+                    onClick={() => setOpen((prev) => !prev)}
+                  >
                   <div className="font-medium flex items-center gap-2">
                     <span>{section.title}</span>
                     <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -213,20 +213,20 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
                       {section.locations.reduce((sum, loc) => sum + loc.agents, 0)} agentes
                     </div>
                     <div className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-red-700">
-                      <span>{open ? "Ocultar" : "ver detalle"}</span>
+                        <span>{open ? "Ocultar" : "ver detalle"}</span>
+                      </div>
                     </div>
                   </div>
+                  {open && (
+                <div className="p-4">
+                  <SecurityPlanTable locations={section.locations} />
+                    </div>
+                  )}
                 </div>
-                {open && (
-                  <div className="p-4">
-                    <SecurityPlanTable locations={section.locations} />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </details>
+              )
+            })}
+          </div>
+        </details>
     </div>
   )
 }

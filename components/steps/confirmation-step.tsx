@@ -4,15 +4,17 @@ import type { FormData } from "../multi-step-form"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Pencil } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface ConfirmationStepProps {
   formData: FormData
   goToStep: (step: number) => void
+  acceptDisclaimer: boolean
+  setAcceptDisclaimer: (checked: boolean) => void
 }
 
-export function ConfirmationStep({ formData, goToStep }: ConfirmationStepProps) {
+export function ConfirmationStep({ formData, goToStep, acceptDisclaimer, setAcceptDisclaimer }: ConfirmationStepProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return ""
     const date = new Date(dateString)
@@ -233,13 +235,19 @@ export function ConfirmationStep({ formData, goToStep }: ConfirmationStepProps) 
         </CardContent>
       </Card>
 
-      <Alert>
-        <AlertDescription>
-          Por favor, revise cuidadosamente toda la información antes de enviar el formulario. Una vez enviado, se
-          notificará a todos los operarios involucrados y se programará el evento. Si necesita realizar cambios después
-          de enviar, deberá contactar al administrador del sistema.
-        </AlertDescription>
-      </Alert>
+      <div className="mb-6 w-full">
+        <label className="flex items-start gap-3 p-4 border border-red-300 rounded-lg bg-red-50 shadow-sm">
+          <input
+            type="checkbox"
+            checked={acceptDisclaimer}
+            onChange={e => setAcceptDisclaimer(e.target.checked)}
+            className="accent-red-600 w-5 h-5 mt-1"
+          />
+          <span className="text-base font-semibold text-red-900">
+            Doy mi consentimiento para que los datos enviados sean utilizados en la orden de trabajo. Entiendo que TECH SECURITY S.R.L. no se responsabiliza por errores, omisiones o mala carga de los datos proporcionados en este formulario.
+          </span>
+        </label>
+      </div>
     </div>
   )
 }
