@@ -45,6 +45,13 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
     if (onAgentsChange) onAgentsChange(locIdx, newLocations[locIdx].agents)
   }
 
+  function handleDistTextChange(locIdx: number, value: string) {
+    const newLocations = [...localLocations]
+    newLocations[locIdx].distribution = value.replace(/\n/g, '<br>')
+    setLocalLocations(newLocations)
+    if (onAgentsChange) onAgentsChange(locIdx, newLocations[locIdx].agents)
+  }
+
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -84,22 +91,19 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                   )}
                 </TableCell>
                 <TableCell className="w-[35%]">
-                  {location.parsedDistribution.map((dot, dotIdx) => (
-                    <div key={dotIdx} className="flex items-center gap-2 mb-1">
-                      <Input
-                        type="number"
-                        min={0}
-                        max={location.agents}
-                        value={dot.count}
-                        onChange={e => handleDistChange(locIdx, dotIdx, Number(e.target.value))}
-                        className="w-16 text-center border-gray-300"
-                      />
-                      <span>{dot.label}</span>
-                    </div>
-                  ))}
-                  <div className="text-xs text-gray-500 mt-1">Máximo: {location.agents} personas</div>
+                  <textarea
+                    className="w-full border border-gray-300 rounded p-1 text-sm"
+                    value={location.distribution.replace(/<br>/g, '\n')}
+                    onChange={e => handleDistTextChange(locIdx, e.target.value)}
+                    rows={location.distribution.split('<br>').length || 2}
+                  />
                   {(() => {
-                    const total = location.parsedDistribution.reduce((sum: number, d: {count: number}) => sum + (d.count || 0), 0)
+                    // Sumar los números al inicio de cada línea
+                    const lines = location.distribution.replace(/<br>/g, '\n').split(/\n/)
+                    const total = lines.reduce((sum, line) => {
+                      const match = line.match(/^(?:[•\-\*])?\s*(\d+)/)
+                      return sum + (match ? parseInt(match[1]) : 0)
+                    }, 0)
                     if (total !== location.agents) {
                       return <div className="text-xs text-red-600 mt-1 font-semibold">La suma debe ser igual a {location.agents} personas (actual: {total})</div>
                     }
