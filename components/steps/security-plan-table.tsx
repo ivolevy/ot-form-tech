@@ -111,18 +111,6 @@ export function SecurityPlanTable({ locations, onAgentsChange, errorState = {}, 
                       />
                     )
                   })()}
-                  {(() => {
-                    // Sumar los números al inicio de cada línea
-                    const lines = location.distribution.replace(/<br>/g, '\n').split(/\n/)
-                    const total = lines.reduce((sum, line) => {
-                      const match = line.match(/^(?:[•\-\*])?\s*(\d+)/)
-                      return sum + (match ? parseInt(match[1]) : 0)
-                    }, 0)
-                    if (total !== location.agents) {
-                      return <div className="text-xs text-red-600 mt-1 font-semibold">La suma debe ser igual a {location.agents} personas (actual: {total})</div>
-                    }
-                    return null
-                  })()}
                 </TableCell>
                 <TableCell className="w-[50%] align-top">
                   {(() => {
