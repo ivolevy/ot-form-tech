@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { SecurityPlanTable } from "./security-plan-table"
 import { Clock, MapPin, Shield, ChevronDown } from "lucide-react"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 interface OperationalStepProps {
   formData: FormData
@@ -18,14 +18,14 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
   const exteriorAgents = formData.securityPlan.sections.exteriorPerimeter.totalAgents
   const tribunasAgents = formData.securityPlan.sections.stadiumStands.totalAgents
   const internoAgents = formData.securityPlan.sections.internalPerimeter.totalAgents
-  const totalAgents = formData.securityPlan.sections.totalAgents
+  const totalAgents = formData.preMatch.operatorsCount
 
   // El límite debe ser el valor original del plan, no el actual (que puede variar si el usuario edita)
   const [initialMaxAgents] = useState(() => {
     // Buscar el total original sumando todos los agentes de todas las ubicaciones
     const plan = formData.securityPlan.sections
     const sumAll = (subsections: any[]) =>
-      subsections.reduce((sum, sub) => sum + sub.locations.reduce((s, loc) => s + Number(loc.agents), 0), 0)
+      subsections.reduce((sum: number, sub: any) => sum + sub.locations.reduce((s: number, loc: any) => s + Number(loc.agents), 0), 0)
     return (
       sumAll(plan.stadiumStands.subsections) +
       sumAll(plan.exteriorPerimeter.subsections) +
@@ -91,6 +91,50 @@ export function OperationalStep({ formData, updateFormData }: OperationalStepPro
     const total = sumAllWithChange()
     return { trib, ext, int, total }
   }
+
+  // Sincronizar divisiones con cantidad de operarios del paso 2
+  useEffect(() => {
+    const totalOperarios = formData.preMatch.operatorsCount
+    const plan = formData.securityPlan.sections
+    // Sumar todos los agentes actuales
+    const allLocations = [
+      ...plan.stadiumStands.subsections.flatMap((s: any) => s.locations as any[]),
+      ...plan.exteriorPerimeter.subsections.flatMap((s: any) => s.locations as any[]),
+      ...plan.internalPerimeter.subsections.flatMap((s: any) => s.locations as any[]),
+    ]
+    const currentTotal = allLocations.reduce((sum: number, loc: any) => sum + Number(loc.agents), 0)
+    if (currentTotal !== totalOperarios) {
+      // Repartir proporcionalmente
+      const newLocations = allLocations.map((loc: any) => ({ ...loc }))
+      const sumOriginal = allLocations.reduce((sum: number, loc: any) => sum + Number(loc.agents), 0)
+      let remaining = totalOperarios
+      // Reparto proporcional y ajuste del último
+      newLocations.forEach((loc: any, idx: number) => {
+        if (idx < newLocations.length - 1) {
+          loc.agents = Math.round((Number(loc.agents) / sumOriginal) * totalOperarios)
+          remaining -= loc.agents
+        } else {
+          loc.agents = remaining
+        }
+      })
+      // Volver a armar el plan
+      let i = 0
+      const updateSection = (subsections: any[]) =>
+        subsections.map((sub: any) => ({
+          ...sub,
+          locations: sub.locations.map(() => newLocations[i++])
+        }))
+      const updatedPlan = JSON.parse(JSON.stringify(formData.securityPlan))
+      updatedPlan.sections.stadiumStands.subsections = updateSection(plan.stadiumStands.subsections)
+      updatedPlan.sections.exteriorPerimeter.subsections = updateSection(plan.exteriorPerimeter.subsections)
+      updatedPlan.sections.internalPerimeter.subsections = updateSection(plan.internalPerimeter.subsections)
+      updatedPlan.sections.stadiumStands.totalAgents = newLocations.slice(0, plan.stadiumStands.subsections.flatMap((s: any) => s.locations as any[]).length).reduce((sum: number, loc: any) => sum + loc.agents, 0)
+      updatedPlan.sections.exteriorPerimeter.totalAgents = newLocations.slice(plan.stadiumStands.subsections.flatMap((s: any) => s.locations as any[]).length, plan.stadiumStands.subsections.flatMap((s: any) => s.locations as any[]).length + plan.exteriorPerimeter.subsections.flatMap((s: any) => s.locations as any[]).length).reduce((sum: number, loc: any) => sum + loc.agents, 0)
+      updatedPlan.sections.internalPerimeter.totalAgents = newLocations.slice(-plan.internalPerimeter.subsections.flatMap((s: any) => s.locations as any[]).length).reduce((sum: number, loc: any) => sum + loc.agents, 0)
+      updatedPlan.sections.totalAgents = totalOperarios
+      updateFormData({ securityPlan: updatedPlan })
+    }
+  }, [formData.preMatch.operatorsCount])
 
   return (
     <div className="space-y-8">
