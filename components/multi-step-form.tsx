@@ -176,49 +176,19 @@ export default function MultiStepForm() {
         </Button>
 
         {currentStep === 2 ? (
-          <div className="flex items-center">
-            <div className="flex items-center gap-2 mr-6">
-              <input
-                type="checkbox"
-                id="accept-continue-step2"
-                checked={acceptCheckedStep2}
-                onChange={e => setAcceptCheckedStep2(e.target.checked)}
-                className="accent-red-600 w-4 h-4"
-              />
-              <label htmlFor="accept-continue-step2" className="text-sm select-none cursor-pointer">
-                Aceptar y continuar
-              </label>
-            </div>
-            <Button
-              onClick={nextStep}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700"
-              disabled={!acceptCheckedStep2}
-            >
-              Siguiente <ChevronRight size={16} />
-            </Button>
-          </div>
+          <Button
+            onClick={nextStep}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700"
+          >
+            Siguiente <ChevronRight size={16} />
+          </Button>
         ) : currentStep === 3 ? (
-          <div className="flex items-center">
-            <div className="flex items-center gap-2 mr-6">
-              <input
-                type="checkbox"
-                id="accept-continue-step3"
-                checked={acceptCheckedStep3}
-                onChange={e => setAcceptCheckedStep3(e.target.checked)}
-                className="accent-red-600 w-4 h-4"
-              />
-              <label htmlFor="accept-continue-step3" className="text-sm select-none cursor-pointer">
-                Aceptar y continuar
-              </label>
-            </div>
-            <Button
-              onClick={nextStep}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700"
-              disabled={!acceptCheckedStep3}
-            >
-              Siguiente <ChevronRight size={16} />
-            </Button>
-          </div>
+          <Button
+            onClick={nextStep}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700"
+          >
+            Siguiente <ChevronRight size={16} />
+          </Button>
         ) : currentStep === 1 ? (
           <Button onClick={nextStep} className="flex items-center gap-2 bg-red-600 hover:bg-red-700">
             Siguiente <ChevronRight size={16} />
@@ -227,7 +197,6 @@ export default function MultiStepForm() {
           <Button
             onClick={handleSubmit}
             className="bg-red-600 hover:bg-red-700"
-            disabled={!acceptDisclaimer}
           >
             Enviar Formulario
           </Button>
