@@ -260,20 +260,6 @@ export function ConfirmationStep({ formData, goToStep, acceptDisclaimer, setAcce
           </div>
         </CardContent>
       </Card>
-
-      <div className="mb-6 w-full">
-        <label className="flex items-start gap-3 p-4 border border-red-300 rounded-lg bg-red-50 shadow-sm">
-          <input
-            type="checkbox"
-            checked={acceptDisclaimer}
-            onChange={e => setAcceptDisclaimer(e.target.checked)}
-            className="accent-red-600 w-5 h-5 mt-1"
-          />
-          <span className="text-base font-semibold text-red-900">
-            Doy mi consentimiento para que los datos enviados sean utilizados en la orden de trabajo. Entiendo que TECH SECURITY S.R.L. no se responsabiliza por errores, omisiones o mala carga de los datos proporcionados en este formulario.
-          </span>
-        </label>
-      </div>
     </div>
   )
 }
